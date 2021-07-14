@@ -1,3 +1,5 @@
-export default function Transaction() {
-	return <div>Benjamin gaf €200 uit bij Dranken Geers.</div>;
+
+export default function Transaction(props) {
+  const { user, amount, place} = props;
+	return <div>{user} gaf €{amount} uit bij {place}.</div>;
 }
