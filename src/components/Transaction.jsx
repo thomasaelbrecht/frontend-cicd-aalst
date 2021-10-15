@@ -1,8 +1,18 @@
-import React, {useContext} from 'react';
+import React, {useContext, useMemo} from 'react';
 import {IoTrashOutline, IoPencil} from 'react-icons/io5';
-import { TransactionContext } from '../App';
+import {TransactionsContext} from '../contexts/TransactionsProvider.js';
 
-function Transaction({date, amount, user, place}) {
+function Transaction({id, date, amount, user, place}) {
+  const {setTransactionToUpdate, deleteTransaction} = useContext(TransactionsContext);
+
+  const handleUpdate = () => {
+    setTransactionToUpdate(id);
+  };
+
+  const handleRemove = () => {
+    deleteTransaction(id);
+  };
+  
   return (
     <tr>
       <td className="border w-1/4 px-4 py-2">{new Date(date).toLocaleDateString()}</td>
@@ -10,13 +20,13 @@ function Transaction({date, amount, user, place}) {
       <td className="border w-1/4 px-4 py-2">{place.name}</td>
       <td className="border w-1/4 px-4 py-2">{amount} &euro;</td>
       <td className="border w-1/4 px-4 py-2">
-        <button>
-          <IoPencil />
+        <button onClick={handleUpdate}>
+          <IoPencil   />
         </button>
       </td>
       <td className="border w-1/4 px-4 py-2">
-        <button>
-          <IoTrashOutline />
+        <button onClick={handleRemove}>
+          <IoTrashOutline  />
         </button>
       </td>
     </tr>
@@ -25,13 +35,22 @@ function Transaction({date, amount, user, place}) {
 
 const MemoizedTransaction = React.memo(Transaction);
 
-export default function Transactions() {
-  const { transactions } = useContext(TransactionContext);
+export default function Transactions({search}) {
+  const {transactions, error, loading} = useContext(TransactionsContext);
 
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => {
+      return t.place.name.toLowerCase().includes(search.toLowerCase());
+    });
+  }, [transactions, search]);
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <pre>{JSON.stringify(error, null, 2)}</pre>
+  if (!transactions) return null;
   return (
     <table className="table-fixed m-auto">
       <tbody>
-        {transactions.map((trans, i) => {
+        {filteredTransactions.map((trans, i) => {
           return <MemoizedTransaction key={i} {...trans} />;
         })}
       </tbody>

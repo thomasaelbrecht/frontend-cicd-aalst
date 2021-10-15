@@ -1,12 +1,47 @@
 import {useForm} from 'react-hook-form';
+import {TransactionsContext} from '../contexts/TransactionsProvider.js';
+import {useContext, useEffect} from 'react';
 
-export default function AddTransactionForm({places, onSaveTransaction = (f) => f}) {
+export default function AddTransactionForm({places}) {
   const {
     register,
     handleSubmit,
     formState: {errors},
     reset,
+    setValue,
   } = useForm();
+
+  const {currentTransaction, setTransactionToUpdate, createOrUpdateTransaction} =
+    useContext(TransactionsContext);
+
+  useEffect(() => {
+    if (
+      // check on non-empty object
+      currentTransaction &&
+      (Object.keys(currentTransaction).length !== 0 ||
+        currentTransaction.constructor !== Object)
+    ) {
+      const dateAsString = toDateInputString(new Date(currentTransaction.date));
+      setValue('date', dateAsString);
+      setValue('user', currentTransaction.user.name);
+      setValue('place', currentTransaction.place.name);
+      setValue('amount', currentTransaction.amount);
+    } else {
+      reset();
+    }
+  }, [currentTransaction, setValue, reset]);
+
+  const onSubmit = (data) => {
+    createOrUpdateTransaction({
+      id: currentTransaction?.id,
+      placeId: places.find((p) => p.name === data.place).id,
+      amount: data.amount,
+      date: new Date(data.date),
+      user: data.user
+    })
+      .then(() => setTransactionToUpdate(null))
+      .catch(console.error);
+  };
 
   const LabelInput = ({label, type, defaultValue, validation, ...rest}) => {
     return (
@@ -59,11 +94,8 @@ export default function AddTransactionForm({places, onSaveTransaction = (f) => f
     return asString.substring(0, asString.indexOf('T'));
   };
 
-  const onSubmit = (data) => {
-    console.log(JSON.stringify(data));
-    const {user, place, amount, date} = data;
-    onSaveTransaction(user, place, parseInt(amount), date);
-    reset();
+  const cancel = () => {
+    setTransactionToUpdate();
   };
 
   return (
@@ -104,7 +136,8 @@ export default function AddTransactionForm({places, onSaveTransaction = (f) => f
 
         <div className="col-span-6 sm:col-span-3">
           <div className="flex justify-end">
-            <button type="submit">Save</button>
+            <button type="submit"> {currentTransaction?.id ? 'Save Transaction' : 'Add Transaction'}</button>
+            {currentTransaction?.id ? <button onClick={cancel}>Cancel</button> : ''}
           </div>
         </div>
       </div>

@@ -14,9 +14,9 @@ const TRANSACTION_DATA = [
   ];
   
   const PLACE_DATA = [
-	{id: 1, name: 'home', rating: 5},
-	{id: 4, name: 'hogent', rating: 1},
-	{id: 7, name: 'bar', rating: 3},
+	{ id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83', name: 'Loon', rating: 5 },
+	{ id: '7f28c5f9-d711-4cd6-ac15-d13d71abff84', name: 'Dranken Geers', rating: 3 },
+	{ id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85', name: 'Irish Pub', rating: 4 }
   ];
   
   export {TRANSACTION_DATA, PLACE_DATA};
