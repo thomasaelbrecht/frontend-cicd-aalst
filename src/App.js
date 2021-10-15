@@ -1,15 +1,21 @@
 import './App.css';
 import {useState, useMemo, useCallback} from 'react';
-import {TRANSACTION_DATA, PLACE_DATA} from './mock-data';
+import {PLACE_DATA} from './mock-data';
 import Transaction from './components/Transaction';
 import Places from './components/Places';
 import AddTransactionForm from './components/AddTransactionForm';
+import {useFetch} from './hooks/useFetch';
 
 function App() {
   const [places, setPlaces] = useState(PLACE_DATA);
-  const [transactions, setTransactions] = useState(TRANSACTION_DATA);
   const [text, setText] = useState('');
   const [search, setSearch] = useState('');
+
+  const {
+    loading,
+    data: transactions,
+    error,
+  } = useFetch('http://localhost:9000/api/transactions?limit=100&offset=0');
 
   const ratePlace = useCallback(
     (id, rating) => {
@@ -30,17 +36,18 @@ function App() {
       },
       ...transactions,
     ]; // newest first
-    setTransactions(newTransactions);
+    //  setTransactions(newTransactions);
   };
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
       console.log('filtering...');
-      return t.place.toLowerCase().includes(search.toLowerCase());
+      return t.place.name.toLowerCase().includes(search.toLowerCase());
     });
   }, [transactions, search]);
 
-
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <pre>{JSON.stringify(error, null, 2)}</pre>;
   return (
     <div className='App'>
       <AddTransactionForm places={places} onSaveTransaction={createTransaction} />

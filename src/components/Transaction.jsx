@@ -4,7 +4,7 @@ export default React.memo(function Transaction(props) {
 
   return (
     <div className="bg-red-200 text-left">
-      {user} gaf €{amount} uit bij {place}.
+      {user.name} gaf €{amount} uit bij {place.name}.
     </div>
   );
 });
