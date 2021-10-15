@@ -1,7 +1,7 @@
 import './App.css';
 import {useState, useMemo, useCallback} from 'react';
 import {PLACE_DATA} from './mock-data';
-import Transaction from './components/Transaction';
+import Transactions from './components/Transaction';
 import Places from './components/Places';
 import AddTransactionForm from './components/AddTransactionForm';
 import {useFetch} from './hooks/useFetch';
@@ -63,9 +63,7 @@ function App() {
           Search
         </button>
       </div>
-      {filteredTransactions.map((trans, index) => (
-        <Transaction {...trans} key={index} />
-      ))}
+      <Transactions transactions={filteredTransactions}/>
       <Places places={places} onRate={ratePlace} />
     </div>
   );
