@@ -50,8 +50,8 @@ export default function Transactions({search}) {
   return (
     <table className="table-fixed m-auto">
       <tbody>
-        {filteredTransactions.map((trans, i) => {
-          return <MemoizedTransaction key={i} {...trans} />;
+      {filteredTransactions.map((trans) => {
+          return <MemoizedTransaction key={trans.id} {...trans} />;
         })}
       </tbody>
     </table>

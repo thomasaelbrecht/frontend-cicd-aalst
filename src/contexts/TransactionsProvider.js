@@ -1,10 +1,20 @@
-import {createContext, useState, useEffect, useCallback} from 'react';
+import {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useContext
+} from 'react';
 import axios from 'axios';
 import config from '../config.json';
 
 export const TransactionsContext = createContext();
+export const useTransactions = () => useContext(TransactionsContext);
 
-export const TransactionsProvider = ({children}) => {
+export const TransactionsProvider = ({
+  children
+}) => {
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
@@ -14,12 +24,14 @@ export const TransactionsProvider = ({children}) => {
     try {
       setError();
       setLoading(true);
-      const {data} = await axios.get(`${config.base_url}transactions?limit=25&offset=0`);
+      const {
+        data
+      } = await axios.get(`${config.base_url}transactions?limit=25&offset=0`);
       setTransactions(data.data);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       setError(error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -29,14 +41,27 @@ export const TransactionsProvider = ({children}) => {
     }
   }, [transactions, refreshTransactions]);
 
-  const createOrUpdateTransaction = async ({id, placeId, amount, date, user}) => {
+  const createOrUpdateTransaction = useCallback(async ({
+    id,
+    placeId,
+    amount,
+    date,
+    user
+  }) => {
     setError();
-    let data = {placeId, amount, date, user};
+    setLoading(true);
+    let data = {
+      placeId,
+      amount,
+      date,
+      user
+    };
     let method = id ? 'put' : 'post';
     let url = `${config.base_url}transactions/${id ?? ''}`;
-
     try {
-      const {changedTransaction} = await axios({
+      const {
+        changedTransaction
+      } = await axios({
         method,
         url,
         data,
@@ -46,13 +71,18 @@ export const TransactionsProvider = ({children}) => {
     } catch (error) {
       console.log(error);
       throw error;
+    } finally {
+        setLoading(false);      
     }
-  };
+  }, [refreshTransactions]);
 
-  const deleteTransaction = async (id) => {
+  const deleteTransaction = useCallback(async (id) => {
     try {
       setError();
-      const {data} = await axios({
+      setLoading(true);
+      const {
+        data
+      } = await axios({
         method: 'delete',
         url: `${config.base_url}transactions/${id}`,
       });
@@ -61,25 +91,31 @@ export const TransactionsProvider = ({children}) => {
     } catch (error) {
       console.log(error);
       throw error;
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [refreshTransactions]);
 
-  const setTransactionToUpdate = (id) => {
+  const setTransactionToUpdate = useCallback((id) => {
     setCurrentTransaction(id === null ? {} : transactions.find((t) => t.id === id));
-  };
+  }, [transactions]);
 
-  return (
-    <TransactionsContext.Provider
-      value={{
-        transactions,
-        error,
-        loading,
-        createOrUpdateTransaction,
-        deleteTransaction,
-        setTransactionToUpdate,
-        currentTransaction,
-      }}>
-      {children}
-    </TransactionsContext.Provider>
+  const value = useMemo(() => ({
+    transactions,
+    error,
+    loading,
+    currentTransaction,
+    createOrUpdateTransaction,
+    deleteTransaction,
+    setTransactionToUpdate,
+  }), [transactions, error, loading, currentTransaction, createOrUpdateTransaction,
+    deleteTransaction,
+    setTransactionToUpdate
+  ]);
+
+  return ( 
+  <TransactionsContext.Provider value = {value} > 
+    {children} 
+  </TransactionsContext.Provider>
   );
 };
