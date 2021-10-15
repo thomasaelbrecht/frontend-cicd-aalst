@@ -150,7 +150,9 @@ export default function TransactionForm() {
           <div className="col-span-6 sm:col-span-3">
             <div className="flex justify-end">
               <button type="submit"> {currentTransaction?.id ? 'Save Transaction' : 'Add Transaction'}</button>
-              {currentTransaction?.id ?<button onClick={cancel}>Cancel</button>:""}
+              {currentTransaction?.id && (
+								<button onClick={cancel}>Cancel</button>
+							)}
             </div>
           </div>
         </div>

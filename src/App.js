@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState,  createContext } from "react";
+import { useState,  createContext, useCallback } from "react";
 import Transactions from "./components/Transaction";
 import Places from "./components/Places";
 import TransactionForm from "./components/TransactionForm";
@@ -12,6 +12,9 @@ function App() {
     const [text, setText] = useState("");
     const [search, setSearch] = useState("");
 
+    const handleInputChange = useCallback((e) => setText(e.target.value), []);
+    const handleSearch = useCallback(() => setSearch(text), [text]);
+
     return (
         <PlacesProvider>
             <TransactionsProvider>
@@ -21,11 +24,11 @@ function App() {
                         <input
                             type="search"
                             value={text}
-                            onChange={(e) => setText(e.target.value)}
+                            onChange={handleInputChange}
                             className="flex-1"
                             placeholder="search"
                         />
-                        <button type="button" onClick={() => setSearch(text)}>
+                        <button type="button" onClick={handleSearch}>
                             Search
                         </button>
                     </div>

@@ -1,24 +1,31 @@
-import {IoStarSharp} from 'react-icons/io5';
+import { memo, useCallback, useMemo } from 'react';
+import { IoStarSharp } from 'react-icons/io5';
 
-const Star = ({selected = false, onSelect = (f) => f}) => {
+const Star = memo(({
+  index,
+  selected = false,
+  onSelect = (f) => f
+}) => {
+  const handleSelect = useCallback(() => onSelect(index + 1), [index, onSelect]);
   return (
     <IoStarSharp
       color={selected ? 'yellow' : 'grey'}
       className="inline-block"
-      onClick={onSelect}
+      onClick={handleSelect}
     />
   );
-};
+});
 
-export default function StarRating({totalStars = 5, selectedStars = 0, onRate}) {
+export default memo(function StarRating({ totalStars = 5, selectedStars = 0, onRate }) {
+  const stars = useMemo(() => [...new Array(totalStars)], [totalStars]);
   return (
     <>
-      {[...new Array(totalStars)].map((star, i) => (
-        <Star key={i} selected={selectedStars > i} onSelect={() => onRate(i + 1)} />
+      {stars.map((_, i) => (
+        <Star key={i} index={i} selected={selectedStars > i} onSelect={onRate} />
       ))}
       <p className="text-xs text-gray-700">
         {selectedStars} of {totalStars} stars
       </p>
     </>
   );
-}
+})

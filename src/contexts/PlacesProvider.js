@@ -43,36 +43,7 @@ import {
       }
     }, [refreshPlaces, places]);
   
-    const ratePlace = useCallback(async ({
-      id,
-      name,
-      rating
-    }) => {
-      setError();
-      setLoading(true);
-      let data = {
-        name,
-        rating
-      };
-      let method = 'put';
-      try {
-        const {
-          changedPlace
-        } = await axios({
-          method,
-          url: `${config.base_url}places/${id}`,
-          data,
-        });
-        await refreshPlaces();
-        return changedPlace;
-      } catch (error) {
-        console.error(error);
-        throw error;
-      } finally {
-        setLoading(false)
-      }
-    }, [refreshPlaces]);
-  
+    
     const createOrUpdatePlace = useCallback(async ({
       id,
       name,
@@ -103,6 +74,11 @@ import {
         setLoading(false)
       }
     }, [refreshPlaces]);
+
+    const ratePlace = useCallback(async (id, rating) => {
+        const place = places.find((p) => p.id === id);
+        return await createOrUpdatePlace({ ...place, rating });
+      }, [places, createOrUpdatePlace]);
   
     const deletePlace = useCallback(async (id) => {
       setLoading(true);
@@ -136,7 +112,7 @@ import {
     }), [places, error, loading, setCurrentPlace, ratePlace, deletePlace, currentPlace, createOrUpdatePlace])
   
     return ( 
-        <PlacesContext.Provider value={value}>
+      <PlacesContext.Provider value={value}>
         {children}
       </PlacesContext.Provider>
     );
