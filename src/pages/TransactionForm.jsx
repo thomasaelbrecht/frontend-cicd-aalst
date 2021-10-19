@@ -1,6 +1,6 @@
 import { useContext, useEffect, useCallback } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useTransactions } from '../contexts/TransactionsProvider';
 import { PlacesContext } from '../contexts/PlacesProvider.js';
 import LabelInput from '../components/LabelInput';
@@ -82,12 +82,6 @@ export default function TransactionForm() {
       .catch(console.error);
   }, [createOrUpdateTransaction, currentTransaction?.id,  setTransactionToUpdate]);
 
-
-  const cancel = useCallback(() => {
-    setTransactionToUpdate(null);
-  }, [setTransactionToUpdate]);
-
-
   return (
     <FormProvider handleSubmit={handleSubmit} errors={errors} register={register}>
       <form onSubmit={handleSubmit(onSubmit)} className="m-5">
@@ -117,10 +111,8 @@ export default function TransactionForm() {
           />
           <div className="col-span-12 sm:col-span-6">
             <div className="flex justify-end">
-              <button type="submit"> {currentTransaction?.id ? 'Save Transaction' : 'Add Transaction'}</button>
-              {currentTransaction?.id && (
-								<button onClick={cancel}>Cancel</button>
-							)}
+              <button type="submit"> {currentTransaction?.id ? 'Save transaction' : 'Add transaction'}</button>
+              <Link className="button" to="/transactions">Cancel</Link>
             </div>
           </div>
         </div>
