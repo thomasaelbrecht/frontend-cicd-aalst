@@ -1,42 +1,45 @@
 import "./App.css";
-import { useState,  createContext, useCallback } from "react";
-import Transactions from "./components/Transaction";
-import Places from "./components/Places";
-import TransactionForm from "./components/TransactionForm";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
+import Places from "./pages/Places";
 import { TransactionsProvider } from "./contexts/TransactionsProvider";
+import TransactionForm from "./pages/TransactionForm";
+import Transactions from "./pages/Transactions";
 import { PlacesProvider } from "./contexts/PlacesProvider";
 
-export const TransactionContext = createContext();
-
 function App() {
-    const [text, setText] = useState("");
-    const [search, setSearch] = useState("");
-
-    const handleInputChange = useCallback((e) => setText(e.target.value), []);
-    const handleSearch = useCallback(() => setSearch(text), [text]);
-
     return (
-        <PlacesProvider>
-            <TransactionsProvider>
-                <div className="App">
-                    <TransactionForm />
-                    <div className="m-5 flex">
-                        <input
-                            type="search"
-                            value={text}
-                            onChange={handleInputChange}
-                            className="flex-1"
-                            placeholder="search"
-                        />
-                        <button type="button" onClick={handleSearch}>
-                            Search
-                        </button>
-                    </div>
-                    <Transactions search={search} />
-                    <Places />
-                </div>
-            </TransactionsProvider>
-        </PlacesProvider>
+      <PlacesProvider>
+        <TransactionsProvider>
+          <Router>
+            <Switch>
+              <Route path="/" exact>
+                <Redirect to="/transactions" />
+              </Route>
+
+              <Route path="/transactions" exact>
+                <Transactions />
+              </Route>
+
+              <Route path="/transactions/add" exact>
+                <TransactionForm />
+              </Route>
+
+              <Route path="/transactions/edit/:id" exact>
+                <TransactionForm />
+              </Route>
+
+              <Route path="/places">
+                <Places />
+              </Route>
+            </Switch>
+          </Router>
+        </TransactionsProvider>
+      </PlacesProvider>
     );
 }
 

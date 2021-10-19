@@ -23,18 +23,4 @@ const Place = memo(({ id, name, rating }) => {
 	);
 });
 
-export default function Places() {
-	const { places } = usePlaces();
-
-	return (
-		<div className="flex flex-wrap">
-			{places
-				.sort((a, b) =>
-					a.name.toUpperCase().localeCompare(b.name.toUpperCase())
-				)
-				.map((p) => (
-					<Place key={p.id} {...p} />
-				))}
-		</div>
-	);
-}
+export default Place;

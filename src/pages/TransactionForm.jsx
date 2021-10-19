@@ -1,7 +1,10 @@
-import {useFormContext, useForm, FormProvider} from 'react-hook-form';
-import {useTransactions} from '../contexts/TransactionsProvider';
-import {PlacesContext} from '../contexts/PlacesProvider.js';
-import { useContext, useEffect, useCallback} from 'react';
+import { useContext, useEffect, useCallback } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import { useTransactions } from '../contexts/TransactionsProvider';
+import { PlacesContext } from '../contexts/PlacesProvider.js';
+import LabelInput from '../components/LabelInput';
+import LabelSelect from '../components/LabelSelect';
 
 const validationRules = {
   user: {
@@ -18,47 +21,6 @@ const validationRules = {
   }
 }
 
-const LabelInput = ({label, type, defaultValue, validation, ...rest}) => {
-  const { register, errors  } = useFormContext();
-  return (
-    <div className="col-span-6 sm:col-span-3">
-      <label htmlFor={label}>{label}</label>
-      <input
-        {...register(label, validation)}
-        defaultValue={defaultValue}
-        placeholder={label}
-        type={type}
-        id={label}
-        name={label}
-        {...rest}
-      />
-      {errors[label] && <p className="text-red-500">{errors[label].message}</p>}
-    </div>
-  );
-};
-
-const LabelSelect = ({label, options, validation, ...rest}) => {
-  const { register,  errors  } = useFormContext();
-  return (
-    <div className="col-span-6 sm:col-span-3">
-      <label htmlFor={label}>{label}</label>
-      <select
-        {...register(label, validation)}
-        {...rest}
-        id={label}
-        name={label}>
-        <option value="">--choose a {label}--</option>
-        {options.map((value) => (
-          <option key={value.id} value={value.id}>
-            {value.name}
-          </option>
-        ))}
-      </select>
-      {errors[label] && <p className="text-red-500">{errors[label].message}</p>}
-    </div>
-  );
-};
-
 const toDateInputString = (date) => {
   // (toISOString returns something like 2020-12-05T14:15:74Z,
   // date HTML5 input elements expect 2020-12-05
@@ -72,6 +34,7 @@ const toDateInputString = (date) => {
 };
 
 export default function TransactionForm() {
+  const { id } = useParams();
   const {
     register,
     handleSubmit,
@@ -102,10 +65,15 @@ export default function TransactionForm() {
     }
   }, [currentTransaction, setValue, reset]);
 
+  useEffect(() => {
+    console.log('id', id);
+    setTransactionToUpdate(id);
+  }, [id, setTransactionToUpdate]);
+
   const onSubmit = useCallback((data) => {
     createOrUpdateTransaction({
       id: currentTransaction?.id,
-      placeId: data.place, 
+      placeId: data.place,
       amount: data.amount,
       date: new Date(data.date),
       user:data.user,
@@ -113,7 +81,7 @@ export default function TransactionForm() {
       .then(() => setTransactionToUpdate(null))
       .catch(console.error);
   }, [createOrUpdateTransaction, currentTransaction?.id,  setTransactionToUpdate]);
- 
+
 
   const cancel = useCallback(() => {
     setTransactionToUpdate(null);
@@ -146,8 +114,8 @@ export default function TransactionForm() {
             type="number"
             defaultValue="0"
             validation={validationRules.amount}
-          /> 
-          <div className="col-span-6 sm:col-span-3">
+          />
+          <div className="col-span-12 sm:col-span-6">
             <div className="flex justify-end">
               <button type="submit"> {currentTransaction?.id ? 'Save Transaction' : 'Add Transaction'}</button>
               {currentTransaction?.id && (
