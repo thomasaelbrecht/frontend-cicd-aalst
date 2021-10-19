@@ -1,6 +1,6 @@
 import { useContext, useEffect, useCallback } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import { useTransactions } from '../contexts/TransactionsProvider';
 import { PlacesContext } from '../contexts/PlacesProvider.js';
 import LabelInput from '../components/LabelInput';
@@ -35,6 +35,7 @@ const toDateInputString = (date) => {
 
 export default function TransactionForm() {
   const { id } = useParams();
+  const history = useHistory();
   const {
     register,
     handleSubmit,
@@ -70,17 +71,21 @@ export default function TransactionForm() {
     setTransactionToUpdate(id);
   }, [id, setTransactionToUpdate]);
 
-  const onSubmit = useCallback((data) => {
-    createOrUpdateTransaction({
-      id: currentTransaction?.id,
-      placeId: data.place,
-      amount: data.amount,
-      date: new Date(data.date),
-      user:data.user,
-    })
-      .then(() => setTransactionToUpdate(null))
-      .catch(console.error);
-  }, [createOrUpdateTransaction, currentTransaction?.id,  setTransactionToUpdate]);
+  const onSubmit = useCallback(async (data) => {
+    try {
+      await createOrUpdateTransaction({
+        id: currentTransaction?.id,
+        placeId: data.place,
+        amount: data.amount,
+        date: new Date(data.date),
+        user:data.user,
+      });
+      setTransactionToUpdate(null)
+      history.push('/transactions');
+    } catch (error) {
+      console.error(error);
+    }
+  }, [createOrUpdateTransaction, currentTransaction?.id,  setTransactionToUpdate, history]);
 
   return (
     <FormProvider handleSubmit={handleSubmit} errors={errors} register={register}>
