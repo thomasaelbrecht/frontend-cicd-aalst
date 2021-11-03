@@ -1,20 +1,20 @@
-import React, { useContext, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { TransactionsContext } from '../contexts/TransactionsProvider';
-import Transaction from './Transaction';
+import React, { useContext, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { TransactionsContext } from "../contexts/TransactionsProvider";
+import Transaction from "./Transaction";
 
 export default function TransactionList({ search }) {
-	const { transactions, error, loading } = useContext(TransactionsContext);
+  const { transactions, error, loading } = useContext(TransactionsContext);
 
-	const filteredTransactions = useMemo(() => {
-		return transactions.filter((t) => {
-			return t.place.name.toLowerCase().includes(search.toLowerCase());
-		});
-	}, [transactions, search]);
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => {
+      return t.place.name.toLowerCase().includes(search.toLowerCase());
+    });
+  }, [transactions, search]);
 
-	if (loading) return <h1>Loading...</h1>;
-	if (error) return <p className="error">{JSON.stringify(error, null, 2)}</p>;
-	if (!transactions || !transactions.length) {
+  if (loading) return <h1 data-cy="loading">Loading...</h1>;
+  if (error) return <p className="error">{JSON.stringify(error, null, 2)}</p>;
+  if (!transactions || !transactions.length) {
     return (
       <p className="info flex flex-row items-center">
         <span className="flex-1">There are no transactions</span>
@@ -26,8 +26,8 @@ export default function TransactionList({ search }) {
     );
   }
 
-	return (
-		<table className="table-fixed m-auto">
+  return (
+    <table className="table-fixed m-auto">
       <thead>
         <tr>
           <th>Date</th>
@@ -37,11 +37,11 @@ export default function TransactionList({ search }) {
           <th></th>
         </tr>
       </thead>
-			<tbody>
-				{filteredTransactions.map((trans) => {
-					return <Transaction key={trans.id} {...trans} />;
-				})}
-			</tbody>
-		</table>
-	);
+      <tbody>
+        {filteredTransactions.map((trans) => {
+          return <Transaction key={trans.id} {...trans} />;
+        })}
+      </tbody>
+    </table>
+  );
 }
