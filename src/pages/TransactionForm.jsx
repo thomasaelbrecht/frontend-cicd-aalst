@@ -1,25 +1,25 @@
-import { useContext, useEffect, useCallback } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import { Link, useParams, useHistory } from 'react-router-dom';
-import { useTransactions } from '../contexts/TransactionsProvider';
-import { PlacesContext } from '../contexts/PlacesProvider.js';
-import LabelInput from '../components/LabelInput';
-import LabelSelect from '../components/LabelSelect';
+import { useContext, useEffect, useCallback } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { Link, useParams, useHistory } from "react-router-dom";
+import { useTransactions } from "../contexts/TransactionsProvider";
+import { PlacesContext } from "../contexts/PlacesProvider.js";
+import LabelInput from "../components/LabelInput";
+import LabelSelect from "../components/LabelSelect";
 
 const validationRules = {
   user: {
-    required: 'this is required',
-    minLength: {value: 2, message: 'Min length is 2'},
+    required: "this is required",
+    minLength: { value: 2, message: "Min length is 2" },
   },
-  date:{required: 'this is required'},
-  place:{required: 'this is required'},
-  amount:{
+  date: { required: "this is required" },
+  place: { required: "this is required" },
+  amount: {
     valueAsNumber: true,
-    required: 'this is required',
-    min: {value: 1, message: 'min 1'},
-    max: {value: 5000, message: 'max 5000'},
-  }
-}
+    required: "this is required",
+    min: { value: 1, message: "min 1" },
+    max: { value: 5000, message: "max 5000" },
+  },
+};
 
 const toDateInputString = (date) => {
   // (toISOString returns something like 2020-12-05T14:15:74Z,
@@ -30,7 +30,7 @@ const toDateInputString = (date) => {
     date = new Date(date);
   }
   const asString = date.toISOString();
-  return asString.substring(0, asString.indexOf('T'));
+  return asString.substring(0, asString.indexOf("T"));
 };
 
 export default function TransactionForm() {
@@ -39,15 +39,18 @@ export default function TransactionForm() {
   const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
     reset,
     setValue,
   } = useForm();
 
-  const {currentTransaction, setTransactionToUpdate, createOrUpdateTransaction} =
-    useTransactions();
+  const {
+    currentTransaction,
+    setTransactionToUpdate,
+    createOrUpdateTransaction,
+  } = useTransactions();
 
-  const {places} = useContext(PlacesContext);
+  const { places } = useContext(PlacesContext);
 
   useEffect(() => {
     if (
@@ -57,38 +60,50 @@ export default function TransactionForm() {
         currentTransaction.constructor !== Object)
     ) {
       const dateAsString = toDateInputString(new Date(currentTransaction.date));
-      setValue('date', dateAsString);
-      setValue('user', currentTransaction.user.name);
-      setValue('place', currentTransaction.place.id);
-      setValue('amount', currentTransaction.amount);
+      setValue("date", dateAsString);
+      setValue("user", currentTransaction.user.name);
+      setValue("place", currentTransaction.place.id);
+      setValue("amount", currentTransaction.amount);
     } else {
       reset();
     }
   }, [currentTransaction, setValue, reset]);
 
   useEffect(() => {
-    console.log('id', id);
+    console.log("id", id);
     setTransactionToUpdate(id);
   }, [id, setTransactionToUpdate]);
 
-  const onSubmit = useCallback(async (data) => {
-    try {
-      await createOrUpdateTransaction({
-        id: currentTransaction?.id,
-        placeId: data.place,
-        amount: data.amount,
-        date: new Date(data.date),
-        user:data.user,
-      });
-      setTransactionToUpdate(null)
-      history.push('/transactions');
-    } catch (error) {
-      console.error(error);
-    }
-  }, [createOrUpdateTransaction, currentTransaction?.id,  setTransactionToUpdate, history]);
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await createOrUpdateTransaction({
+          id: currentTransaction?.id,
+          placeId: data.place,
+          amount: data.amount,
+          date: new Date(data.date),
+          user: data.user,
+        });
+        setTransactionToUpdate(null);
+        history.push("/transactions");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [
+      createOrUpdateTransaction,
+      currentTransaction?.id,
+      setTransactionToUpdate,
+      history,
+    ]
+  );
 
   return (
-    <FormProvider handleSubmit={handleSubmit} errors={errors} register={register}>
+    <FormProvider
+      handleSubmit={handleSubmit}
+      errors={errors}
+      register={register}
+    >
       <form onSubmit={handleSubmit(onSubmit)} className="m-5">
         <div className="grid grid-cols-6 gap-6">
           <LabelInput
@@ -96,28 +111,39 @@ export default function TransactionForm() {
             type="text"
             defaultValue=""
             validation={validationRules.user}
+            data-cy="user_input"
           />
           <LabelInput
             label="date"
             type="date"
             defaultValue={toDateInputString(new Date())}
             validation={validationRules.date}
+            data-cy="date_input"
           />
           <LabelSelect
             label="place"
             options={places}
             validation={validationRules.place}
+            data-cy="place_input"
           />
           <LabelInput
             label="amount"
             type="number"
             defaultValue="0"
             validation={validationRules.amount}
+            data-cy="amount_input"
           />
           <div className="col-span-12 sm:col-span-6">
             <div className="flex justify-end">
-              <button type="submit"> {currentTransaction?.id ? 'Save transaction' : 'Add transaction'}</button>
-              <Link className="button" to="/transactions">Cancel</Link>
+              <button type="submit" data-cy="submit_transaction">
+                {" "}
+                {currentTransaction?.id
+                  ? "Save transaction"
+                  : "Add transaction"}
+              </button>
+              <Link className="button" to="/transactions">
+                Cancel
+              </Link>
             </div>
           </div>
         </div>
