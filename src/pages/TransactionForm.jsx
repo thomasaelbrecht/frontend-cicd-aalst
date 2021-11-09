@@ -36,13 +36,12 @@ const toDateInputString = (date) => {
 export default function TransactionForm() {
   const { id } = useParams();
   const history = useHistory();
+  const methods = useForm();
   const {
-    register,
     handleSubmit,
-    formState: { errors },
     reset,
     setValue,
-  } = useForm();
+  } = methods;
 
   const {
     currentTransaction,
@@ -70,7 +69,6 @@ export default function TransactionForm() {
   }, [currentTransaction, setValue, reset]);
 
   useEffect(() => {
-    console.log("id", id);
     setTransactionToUpdate(id);
   }, [id, setTransactionToUpdate]);
 
@@ -99,11 +97,7 @@ export default function TransactionForm() {
   );
 
   return (
-    <FormProvider
-      handleSubmit={handleSubmit}
-      errors={errors}
-      register={register}
-    >
+    <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="m-5">
         <div className="grid grid-cols-6 gap-6">
           <LabelInput
