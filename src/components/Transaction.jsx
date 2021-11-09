@@ -13,7 +13,11 @@ const Transaction = memo(({ id, date, amount, user, place }) => {
   return (
     <tr data-cy="transaction">
       <td data-cy="transaction_date" className="border w-1/4 px-4 py-2">
-        {new Date(date).toLocaleDateString()}
+        {new Date(date).toLocaleDateString("nl-BE", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })}
       </td>
       <td data-cy="transaction_user" className="border w-1/4 px-4 py-2">
         {user.name}
