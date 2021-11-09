@@ -6,8 +6,7 @@ import {
   useMemo,
   useContext
 } from 'react';
-import axios from 'axios';
-import config from '../config.json';
+import * as transactionsApi from '../api/transactions';
 
 export const TransactionsContext = createContext();
 export const useTransactions = () => useContext(TransactionsContext);
@@ -24,9 +23,7 @@ export const TransactionsProvider = ({
     try {
       setError();
       setLoading(true);
-      const {
-        data
-      } = await axios.get(`${config.base_url}transactions?limit=25&offset=0`);
+      const data = await transactionsApi.getAllTransactions();
       setTransactions(data.data);
     } catch (error) {
       setError(error);
@@ -50,21 +47,13 @@ export const TransactionsProvider = ({
   }) => {
     setError();
     setLoading(true);
-    let data = {
-      placeId,
-      amount,
-      date,
-      user
-    };
-    let method = id ? 'put' : 'post';
-    let url = `${config.base_url}transactions/${id ?? ''}`;
     try {
-      const {
-        changedTransaction
-      } = await axios({
-        method,
-        url,
-        data,
+      const changedTransaction = await transactionsApi.saveTransaction({
+        id,
+        placeId,
+        amount,
+        date,
+        user
       });
       await refreshTransactions();
       return changedTransaction;
@@ -72,7 +61,7 @@ export const TransactionsProvider = ({
       console.log(error);
       throw error;
     } finally {
-        setLoading(false);      
+        setLoading(false);
     }
   }, [refreshTransactions]);
 
@@ -80,14 +69,8 @@ export const TransactionsProvider = ({
     try {
       setError();
       setLoading(true);
-      const {
-        data
-      } = await axios({
-        method: 'delete',
-        url: `${config.base_url}transactions/${id}`,
-      });
+      await transactionsApi.deleteTransaction(id);
       refreshTransactions();
-      return data;
     } catch (error) {
       console.log(error);
       throw error;
@@ -113,9 +96,9 @@ export const TransactionsProvider = ({
     setTransactionToUpdate
   ]);
 
-  return ( 
-  <TransactionsContext.Provider value = {value} > 
-    {children} 
-  </TransactionsContext.Provider>
+  return (
+    <TransactionsContext.Provider value = {value} >
+      {children}
+    </TransactionsContext.Provider>
   );
 };
