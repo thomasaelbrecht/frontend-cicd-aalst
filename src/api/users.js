@@ -1,10 +1,9 @@
-import axios from 'axios';
-import config from '../config.json';
+import { axios } from '.';
 
 export const login = async (email, password) => {
   const {
     data
-  } = await axios.post(`${config.base_url}/users/login`, {
+  } = await axios.post(`users/login`, {
     email,
     password
   });
@@ -18,7 +17,7 @@ export const register = async ({
 }) => {
   const {
     data
-  } = await axios.post(`${config.base_url}/users/register`, {
+  } = await axios.post(`users/register`, {
     name,
     email,
     password

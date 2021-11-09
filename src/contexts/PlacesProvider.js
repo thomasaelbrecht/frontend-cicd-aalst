@@ -7,6 +7,7 @@ import {
   useMemo
 } from 'react';
 import * as placesApi from '../api/places';
+import { useSession } from './AuthProvider';
 
 export const PlacesContext = createContext();
 export const usePlaces = () => useContext(PlacesContext);
@@ -14,6 +15,7 @@ export const usePlaces = () => useContext(PlacesContext);
 export const PlacesProvider = ({
   children
 }) => {
+  const { ready: authReady } = useSession();
   const [currentPlace, setCurrentPlace] = useState({});
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
@@ -34,10 +36,10 @@ export const PlacesProvider = ({
   }, []);
 
   useEffect(() => {
-    if (places?.length === 0) {
+    if (!authReady && places?.length === 0) {
       refreshPlaces();
     }
-  }, [refreshPlaces, places]);
+  }, [authReady, refreshPlaces, places]);
 
   const createOrUpdatePlace = useCallback(async ({
     id,

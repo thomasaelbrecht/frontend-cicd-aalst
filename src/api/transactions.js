@@ -1,9 +1,8 @@
-import axios from 'axios';
-import config from '../config.json';
+import { axios } from '.';
 
 export const getAllTransactions = async () => {
   const { data } = await axios.get(
-    `${config.base_url}transactions`,
+    'transactions',
     {
       params: {
         limit: 25,
@@ -23,7 +22,7 @@ export const saveTransaction = async ({
 }) => {
   const { data } = await axios({
     method: id ? 'put' : 'post',
-    url: `${config.base_url}transactions/${id ?? ''}`,
+    url: `transactions/${id ?? ''}`,
     data: {
       placeId,
       amount,
@@ -35,5 +34,5 @@ export const saveTransaction = async ({
 };
 
 export const deleteTransaction = async (id) => {
-  await axios.delete(`${config.base_url}transactions/${id}`);
+  await axios.delete(`transactions/${id}`);
 };

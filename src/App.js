@@ -11,37 +11,40 @@ import TransactionForm from "./pages/TransactionForm";
 import Transactions from "./pages/Transactions";
 import { PlacesProvider } from "./contexts/PlacesProvider";
 import NavMenu from "./components/NavMenu";
+import { AuthProvider } from "./contexts/AuthProvider";
 
 function App() {
   return (
-    <PlacesProvider>
-      <TransactionsProvider>
-        <Router>
-          <NavMenu />
-          <Switch>
-            <Route path="/" exact>
-              <Redirect to="/transactions" />
-            </Route>
+    <AuthProvider>
+      <PlacesProvider>
+        <TransactionsProvider>
+          <Router>
+            <NavMenu />
+            <Switch>
+              <Route path="/" exact>
+                <Redirect to="/transactions" />
+              </Route>
 
-            <Route path="/transactions" exact>
-              <Transactions />
-            </Route>
+              <Route path="/transactions" exact>
+                <Transactions />
+              </Route>
 
-            <Route path="/transactions/add" exact>
-              <TransactionForm />
-            </Route>
+              <Route path="/transactions/add" exact>
+                <TransactionForm />
+              </Route>
 
-            <Route path="/transactions/edit/:id" exact>
-              <TransactionForm />
-            </Route>
+              <Route path="/transactions/edit/:id" exact>
+                <TransactionForm />
+              </Route>
 
-            <Route path="/places">
-              <Places />
-            </Route>
-          </Switch>
-        </Router>
-      </TransactionsProvider>
-    </PlacesProvider>
+              <Route path="/places">
+                <Places />
+              </Route>
+            </Switch>
+          </Router>
+        </TransactionsProvider>
+      </PlacesProvider>
+    </AuthProvider>
   );
 }
 

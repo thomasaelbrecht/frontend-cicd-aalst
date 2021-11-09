@@ -1,10 +1,9 @@
-import axios from 'axios';
-import config from '../config.json';
+import { axios } from '.';
 
 export const getAllPlaces = async () => {
   const {
     data
-  } = await axios.get(`${config.base_url}places`);
+  } = await axios.get('places');
 
   return data;
 };
@@ -18,7 +17,7 @@ export const savePlace = async ({
     data
   } = await axios({
     method: id ? 'put' : 'post',
-    url: `${config.base_url}places/${id ?? ''}`,
+    url: `places/${id ?? ''}`,
     data: {
       name,
       rating
@@ -28,5 +27,5 @@ export const savePlace = async ({
 };
 
 export const deletePlace = async (id) => {
-  await axios.delete(`${config.base_url}places/${id}`);
+  await axios.delete(`places/${id}`);
 };

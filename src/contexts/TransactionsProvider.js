@@ -7,6 +7,7 @@ import {
   useContext
 } from 'react';
 import * as transactionsApi from '../api/transactions';
+import { useSession } from './AuthProvider';
 
 export const TransactionsContext = createContext();
 export const useTransactions = () => useContext(TransactionsContext);
@@ -14,6 +15,7 @@ export const useTransactions = () => useContext(TransactionsContext);
 export const TransactionsProvider = ({
   children
 }) => {
+  const { ready: authReady } = useSession();
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
@@ -33,10 +35,10 @@ export const TransactionsProvider = ({
   }, []);
 
   useEffect(() => {
-    if (transactions?.length === 0) {
+    if (!authReady && transactions?.length === 0) {
       refreshTransactions();
     }
-  }, [transactions, refreshTransactions]);
+  }, [authReady, transactions, refreshTransactions]);
 
   const createOrUpdateTransaction = useCallback(async ({
     id,
