@@ -13,7 +13,12 @@ export default function TransactionList({ search }) {
   }, [transactions, search]);
 
   if (loading) return <h1 data-cy="loading">Loading...</h1>;
-  if (error) return <p className="error">{JSON.stringify(error, null, 2)}</p>;
+  if (error)
+    return (
+      <p data-cy="transactions_error" className="error">
+        {JSON.stringify(error, null, 2)}
+      </p>
+    );
   if (!transactions || !transactions.length) {
     return (
       <p className="info flex flex-row items-center">

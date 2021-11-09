@@ -26,4 +26,34 @@ describe("transactions test", () => {
     cy.wait("@slowResponse");
     cy.get("[data-cy=loading]").should("not.exist");
   });
+
+  it("check filter", () => {
+    cy.visit("http://localhost:3000");
+    cy.get("[data-cy=transactions_search_input").type("Ir");
+    cy.get("[data-cy=transactions_search_btn").click();
+    cy.get("[data-cy=transaction").should("have.length", 2);
+    cy.get("[data-cy=transaction_place]").each((el, idx) => {
+      expect(el[0].textContent).to.match(/Ir/);
+    });
+  });
+
+  it("check empty filter", () => {
+    cy.visit("http://localhost:3000");
+    cy.get("[data-cy=transactions_search_input").type("xyz");
+    cy.get("[data-cy=transactions_search_btn").click();
+    cy.get("[data-cy=transaction").should("have.length", 0);
+    cy.get("[data-cy=transactions_error").should("not.exist");
+  });
+
+  it("error from backend", () => {
+    cy.intercept(
+      "GET",
+      "http://localhost:9000/api/transactions?limit=25&offset=0",
+      { statusCode: 500, body: { error: "internal server error" } }
+    );
+    cy.visit("http://localhost:3000");
+    cy.get("[data-cy=transactions_search_input").type("Ir");
+    cy.get("[data-cy=transactions_search_btn").click();
+    cy.get("[data-cy=transactions_error").should("be.visible");
+  });
 });

@@ -12,24 +12,30 @@ export default function Transactions() {
 
   return (
     <>
-      <h1>
-        Transactions
-      </h1>
+      <h1>Transactions</h1>
       <div className="flex my-4">
         <input
+          data-cy="transactions_search_input"
           type="search"
           value={text}
           onChange={handleInputChange}
           className="flex-1"
           placeholder="Search for a transaction"
         />
-        <button type="button" onClick={handleSearch}>
+        <button
+          type="button"
+          data-cy="transactions_search_btn"
+          onClick={handleSearch}
+        >
           Search
         </button>
       </div>
 
       <div className="flex justify-end my-2">
-        <Link className="button flex flex-row items-center" to="/transactions/add">
+        <Link
+          className="button flex flex-row items-center"
+          to="/transactions/add"
+        >
           <IoAdd /> New transaction
         </Link>
       </div>
