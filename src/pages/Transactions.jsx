@@ -7,14 +7,14 @@ import { useLogin } from "../contexts/AuthProvider";
 export default function Transactions() {
   const [text, setText] = useState("");
   const [search, setSearch] = useState("");
-  const login = useLogin();
+  // const login = useLogin();
 
-  useEffect(() => {
-    async function testLogin() {
-      await login("thomas.aelbrecht@hogent.be", "12345678");
-    }
-    testLogin();
-  }, [login]);
+  // useEffect(() => {
+  //   async function testLogin() {
+  //     await login("thomas.aelbrecht@hogent.be", "12345678");
+  //   }
+  //   testLogin();
+  // }, [login]);
 
   const handleInputChange = useCallback((e) => setText(e.target.value), []);
   const handleSearch = useCallback(() => setSearch(text), [text]);

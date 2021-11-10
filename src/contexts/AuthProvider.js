@@ -9,7 +9,13 @@ const useAuth = () => useContext(AuthContext);
 
 export const useSession = () => {
   const { token, user, ready, error } = useAuth();
-  return { token, user, ready, error };
+  return {
+    token,
+    user,
+    ready,
+    error,
+    isAuthed: Boolean(token),
+  };
 };
 
 export const useLogin = () => {

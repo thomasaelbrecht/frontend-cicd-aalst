@@ -12,6 +12,7 @@ import Transactions from "./pages/Transactions";
 import { PlacesProvider } from "./contexts/PlacesProvider";
 import NavMenu from "./components/NavMenu";
 import { AuthProvider } from "./contexts/AuthProvider";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -39,6 +40,10 @@ function App() {
 
               <Route path="/places">
                 <Places />
+              </Route>
+
+              <Route path="/login">
+                <Login />
               </Route>
             </Switch>
           </Router>
