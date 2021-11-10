@@ -37,11 +37,11 @@ const Transaction = memo(({ id, date, amount, user, place }) => {
           >
             <IoPencil />
           </Link>
-          <button>
-            <IoTrashOutline
-              data-cy="transaction_remove_btn"
-              onClick={handleRemove}
-            />
+          <button
+            data-cy="transaction_remove_btn"
+            onClick={handleRemove}
+          >
+            <IoTrashOutline />
           </button>
         </div>
       </td>

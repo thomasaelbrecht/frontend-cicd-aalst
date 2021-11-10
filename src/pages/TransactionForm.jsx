@@ -136,7 +136,6 @@ export default function TransactionForm() {
           <div className="col-span-12 sm:col-span-6">
             <div className="flex justify-end">
               <button type="submit" data-cy="submit_transaction">
-                {" "}
                 {currentTransaction?.id
                   ? "Save transaction"
                   : "Add transaction"}

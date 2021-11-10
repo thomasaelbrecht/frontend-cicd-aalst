@@ -8,19 +8,19 @@ describe("add transaction form", () => {
     cy.get("[data-cy=amount_input").type("200");
     cy.get("[data-cy=submit_transaction").click();
 
-    cy.get("[data-cy=transaction_user]").eq(3).contains("Pieter");
+    cy.get("[data-cy=transaction_user]").eq(9).contains("Pieter");
     cy.get("[data-cy=transaction_amount]").each((el, idx) => {
-      if (idx === 3) {
+      if (idx === 9) {
         expect(el[0].textContent).to.equal("200 €");
       }
     });
-    cy.get("[data-cy=transaction]").should("have.length", 4);
+    cy.get("[data-cy=transaction]").should("have.length", 10);
   });
 
   it("remove again", () => {
     cy.visit("http://localhost:3000/transactions/");
-    cy.get("[data-cy=transaction_remove_btn").eq(3).click();
-    cy.get("[data-cy=transaction]").should("have.length", 3);
+    cy.get("[data-cy=transaction_remove_btn").eq(9).click();
+    cy.get("[data-cy=transaction]").should("have.length", 9);
   });
 
   it("foutieve naam", () => {
