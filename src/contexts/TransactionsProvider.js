@@ -19,6 +19,7 @@ export const TransactionsProvider = ({
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState({});
 
   const refreshTransactions = useCallback(async () => {
@@ -35,10 +36,11 @@ export const TransactionsProvider = ({
   }, []);
 
   useEffect(() => {
-    if (!authReady && transactions?.length === 0) {
+    if (authReady && !initialLoad) {
       refreshTransactions();
+      setInitialLoad(true);
     }
-  }, [authReady, transactions, refreshTransactions]);
+  }, [authReady, initialLoad, refreshTransactions]);
 
   const createOrUpdateTransaction = useCallback(async ({
     id,

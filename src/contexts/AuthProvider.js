@@ -1,19 +1,21 @@
 import { createContext, useMemo, useState, useCallback, useEffect, useContext } from 'react';
 import * as usersApi from '../api/users';
 import * as api from '../api';
+import config from '../config.json';
 
-const JWT_TOKEN_KEY = 'auth_token';
+const JWT_TOKEN_KEY = config.token_key;
 const AuthContext = createContext();
 
 const useAuth = () => useContext(AuthContext);
 
 export const useSession = () => {
-  const { token, user, ready, error } = useAuth();
+  const { token, user, ready, loading, error } = useAuth();
   return {
     token,
     user,
     ready,
     error,
+    loading,
     isAuthed: Boolean(token),
   };
 };
@@ -33,44 +35,58 @@ export const AuthProvider = ({
 }) => {
   // will be true until the token is set
   const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [token, setToken] = useState(localStorage.getItem(JWT_TOKEN_KEY));
   const [user, setUser] = useState(null);
 
-  // set the token in LocalStorage and axios when there is one
-  useEffect(() => {
+  const setSession = useCallback((token) => {
+    api.setAuthToken(token);
+    setToken(token);
+    setReady(Boolean(token));
+
     if (token) {
-      api.setAuthToken(token);
       localStorage.setItem(JWT_TOKEN_KEY, token);
-      setReady(true);
+    } else {
+      localStorage.removeItem(JWT_TOKEN_KEY);
     }
-  }, [token]);
+  }, []);
+
+  useEffect(() => {
+    console.log('token', token);
+    setSession(token);
+  }, [token, setSession]);
 
   const login = useCallback(async (email, password) => {
     try {
+      setLoading(true);
+      setError(null);
       const { token, user } = await usersApi.login(email, password);
-      setToken(token);
       setUser(user);
-      setReady(true);
+      setSession(token);
+      return true;
     } catch (error) {
-      setError(error);
+      console.error(error);
+      setError('Login failed, try again');
+      return false;
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }, [setSession]);
 
   const logout = useCallback(() => {
-    setToken(null);
-    setUser(null);
-    setReady(false);
-  }, []);
+    setSession(null);
+  }, [setSession]);
 
   const value = useMemo(() => ({
     token,
     user,
     ready,
+    loading,
     error,
     login,
     logout,
-  }), [token, user, ready, error, login, logout]);
+  }), [token, user, ready, loading, error, login, logout]);
 
   return (
     <AuthContext.Provider value={value}>

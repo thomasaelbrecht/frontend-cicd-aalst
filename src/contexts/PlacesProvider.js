@@ -19,7 +19,8 @@ export const PlacesProvider = ({
   const [currentPlace, setCurrentPlace] = useState({});
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const [places, setPlaces] = useState([]);
+  const [initialLoad, setInitialLoad] = useState(false);
+  const [places, setPlaces] = useState(null);
 
   const refreshPlaces = useCallback(async () => {
     try {
@@ -36,10 +37,11 @@ export const PlacesProvider = ({
   }, []);
 
   useEffect(() => {
-    if (!authReady && places?.length === 0) {
+    if (authReady && !initialLoad) {
       refreshPlaces();
+      setInitialLoad(true);
     }
-  }, [authReady, refreshPlaces, places]);
+  }, [authReady, initialLoad, refreshPlaces]);
 
   const createOrUpdatePlace = useCallback(async ({
     id,

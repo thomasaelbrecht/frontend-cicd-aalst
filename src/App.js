@@ -13,6 +13,7 @@ import { PlacesProvider } from "./contexts/PlacesProvider";
 import NavMenu from "./components/NavMenu";
 import { AuthProvider } from "./contexts/AuthProvider";
 import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -26,21 +27,21 @@ function App() {
                 <Redirect to="/transactions" />
               </Route>
 
-              <Route path="/transactions" exact>
+              <PrivateRoute path="/transactions" exact>
                 <Transactions />
-              </Route>
+              </PrivateRoute>
 
-              <Route path="/transactions/add" exact>
+              <PrivateRoute path="/transactions/add" exact>
                 <TransactionForm />
-              </Route>
+              </PrivateRoute>
 
-              <Route path="/transactions/edit/:id" exact>
+              <PrivateRoute path="/transactions/edit/:id" exact>
                 <TransactionForm />
-              </Route>
+              </PrivateRoute>
 
-              <Route path="/places">
+              <PrivateRoute path="/places">
                 <Places />
-              </Route>
+              </PrivateRoute>
 
               <Route path="/login">
                 <Login />

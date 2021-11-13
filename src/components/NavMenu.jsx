@@ -1,5 +1,6 @@
+import { useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import { useSession } from "../contexts/AuthProvider";
+import { useLogout, useSession } from "../contexts/AuthProvider";
 
 const NavItem = ({
   to,
@@ -18,6 +19,11 @@ const NavItem = ({
 
 export default function NavMenu() {
   const { isAuthed } = useSession();
+  const logout = useLogout();
+
+  const handleLogout = useCallback(() => {
+    logout();
+  }, [logout]);
 
   return (
     <div className="mb-6">
@@ -37,7 +43,13 @@ export default function NavMenu() {
               <NavItem to="/login" label="Sign in" />
               <NavItem to="/register" label="Register" />
             </>
-          ) : null
+          ) : (
+            <>
+              <button onClick={handleLogout}>
+                Sign out
+              </button>
+            </>
+          )
         }
       </nav>
     </div>
