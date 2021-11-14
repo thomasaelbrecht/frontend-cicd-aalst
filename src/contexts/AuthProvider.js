@@ -6,6 +6,21 @@ import config from '../config.json';
 const JWT_TOKEN_KEY = config.token_key;
 const AuthContext = createContext();
 
+function parseJwt(token) {
+  if (!token) return {};
+  const base64Url = token.split('.')[1];
+  const payload = Buffer.from(base64Url, 'base64');
+  const jsonPayload = payload.toString('ascii');
+  return JSON.parse(jsonPayload);
+}
+
+function parseExp(exp) {
+  if (!exp) return null;
+  if (typeof exp !== 'number') exp = Number(exp);
+  if (isNaN(exp)) return null;
+  return new Date(exp * 1000);
+}
+
 const useAuth = () => useContext(AuthContext);
 
 export const useSession = () => {
@@ -33,7 +48,7 @@ export const useLogout = () => {
 export const AuthProvider = ({
   children,
 }) => {
-  // will be true until the token is set
+  // will be false until the token is set
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -41,19 +56,23 @@ export const AuthProvider = ({
   const [user, setUser] = useState(null);
 
   const setSession = useCallback((token) => {
-    api.setAuthToken(token);
-    setToken(token);
-    setReady(Boolean(token));
+    const { exp } = parseJwt(token);
+    const expiry = parseExp(exp);
+    const stillValid = expiry >= new Date();
 
-    if (token) {
+    if (stillValid) {
       localStorage.setItem(JWT_TOKEN_KEY, token);
     } else {
       localStorage.removeItem(JWT_TOKEN_KEY);
+      token = null;
     }
+
+    api.setAuthToken(token);
+    setToken(token);
+    setReady(token && stillValid);
   }, []);
 
   useEffect(() => {
-    console.log('token', token);
     setSession(token);
   }, [token, setSession]);
 
