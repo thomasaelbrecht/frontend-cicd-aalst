@@ -45,6 +45,11 @@ export const useLogout = () => {
   return logout;
 };
 
+export const useRegister = () => {
+  const { register } = useAuth();
+  return register;
+};
+
 export const AuthProvider = ({
   children,
 }) => {
@@ -97,6 +102,21 @@ export const AuthProvider = ({
     }
   }, [setSession]);
 
+  const register = useCallback(async (data) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { token, user } = await usersApi.register(data);
+      await setSession(token, user);
+      return true;
+    } catch (error) {
+      setError(error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [setSession]);
+
   const logout = useCallback(() => {
     setSession(null, null);
   }, [setSession]);
@@ -109,7 +129,8 @@ export const AuthProvider = ({
     error,
     login,
     logout,
-  }), [token, user, ready, loading, error, login, logout]);
+    register,
+  }), [token, user, ready, loading, error, login, logout, register]);
 
   return (
     <AuthContext.Provider value={value}>

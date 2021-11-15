@@ -14,6 +14,7 @@ import NavMenu from "./components/NavMenu";
 import { AuthProvider } from "./contexts/AuthProvider";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -45,6 +46,10 @@ function App() {
 
               <Route path="/login">
                 <Login />
+              </Route>
+
+              <Route path="/register">
+                <Register />
               </Route>
             </Switch>
           </Router>
