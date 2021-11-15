@@ -55,8 +55,8 @@ export const AuthProvider = ({
   const [token, setToken] = useState(localStorage.getItem(JWT_TOKEN_KEY));
   const [user, setUser] = useState(null);
 
-  const setSession = useCallback((token) => {
-    const { exp } = parseJwt(token);
+  const setSession = useCallback(async (token, user) => {
+    const { exp, userId } = parseJwt(token);
     const expiry = parseExp(exp);
     const stillValid = expiry >= new Date();
 
@@ -70,6 +70,11 @@ export const AuthProvider = ({
     api.setAuthToken(token);
     setToken(token);
     setReady(token && stillValid);
+
+    if (!user && stillValid) {
+      user = await usersApi.getUserById(userId);
+    }
+    setUser(user);
   }, []);
 
   useEffect(() => {
@@ -81,8 +86,7 @@ export const AuthProvider = ({
       setLoading(true);
       setError(null);
       const { token, user } = await usersApi.login(email, password);
-      setUser(user);
-      setSession(token);
+      await setSession(token, user);
       return true;
     } catch (error) {
       console.error(error);
@@ -94,7 +98,7 @@ export const AuthProvider = ({
   }, [setSession]);
 
   const logout = useCallback(() => {
-    setSession(null);
+    setSession(null, null);
   }, [setSession]);
 
   const value = useMemo(() => ({

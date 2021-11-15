@@ -24,3 +24,10 @@ export const register = async ({
   });
   return data;
 };
+
+export const getUserById = async (id) => {
+  const {
+    data
+  } = await axios.get(`users/${id}`);
+  return data;
+}
