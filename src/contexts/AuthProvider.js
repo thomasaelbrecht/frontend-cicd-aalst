@@ -24,7 +24,7 @@ function parseExp(exp) {
 const useAuth = () => useContext(AuthContext);
 
 export const useSession = () => {
-  const { token, user, ready, loading, error } = useAuth();
+  const { token, user, ready, loading, error, hasRole } = useAuth();
   return {
     token,
     user,
@@ -32,6 +32,7 @@ export const useSession = () => {
     error,
     loading,
     isAuthed: Boolean(token),
+    hasRole,
   };
 };
 
@@ -121,6 +122,11 @@ export const AuthProvider = ({
     setSession(null, null);
   }, [setSession]);
 
+  const hasRole = useCallback((role) => {
+    if (!user) return false;
+    return user.roles.includes(role);
+  }, [user]);
+
   const value = useMemo(() => ({
     token,
     user,
@@ -130,7 +136,8 @@ export const AuthProvider = ({
     login,
     logout,
     register,
-  }), [token, user, ready, loading, error, login, logout, register]);
+    hasRole,
+  }), [token, user, ready, loading, error, login, logout, register, hasRole]);
 
   return (
     <AuthContext.Provider value={value}>
