@@ -2,7 +2,7 @@ import { useContext, useEffect, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Link, useParams, useHistory } from "react-router-dom";
 import { useTransactions } from "../contexts/TransactionsProvider";
-import { PlacesContext } from "../contexts/PlacesProvider.js";
+import { PlacesContext } from "../contexts/PlacesProvider";
 import LabelInput from "../components/LabelInput";
 import LabelSelect from "../components/LabelSelect";
 
