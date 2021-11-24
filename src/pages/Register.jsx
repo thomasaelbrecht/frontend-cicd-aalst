@@ -22,7 +22,7 @@ export default function Register() {
     }
   }, [isAuthed, history]);
 
-  const handleLogin = useCallback(async ({ name, email, password }) => {
+  const handleRegister = useCallback(async ({ name, email, password }) => {
     const success = await register({
       name,
       email,
@@ -64,7 +64,7 @@ export default function Register() {
     <FormProvider {...methods}>
       <div className="mx-auto w-1/4">
         <h1>Register</h1>
-        <form className="grid grid-cols-1 gap-y-4" onSubmit={handleSubmit(handleLogin)}>
+        <form className="grid grid-cols-1 gap-y-4" onSubmit={handleSubmit(handleRegister)}>
           {
             error ? (
               <p className="text-red-500">
@@ -100,7 +100,7 @@ export default function Register() {
 
           <div className="flex flex-row justify-end">
             <button type="submit" disabled={loading} className="disabled:opacity-50">
-              Sign in
+              Register
             </button>
 
             <button type="button" onClick={handleCancel}>
