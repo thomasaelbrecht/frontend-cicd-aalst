@@ -5,6 +5,7 @@ import { useTransactions } from "../contexts/TransactionsProvider";
 import { PlacesContext } from "../contexts/PlacesProvider";
 import LabelInput from "../components/LabelInput";
 import LabelSelect from "../components/LabelSelect";
+import { useSession } from "../contexts/AuthProvider";
 
 const validationRules = {
   user: {
@@ -35,6 +36,7 @@ const toDateInputString = (date) => {
 
 export default function TransactionForm() {
   const { id } = useParams();
+  const { user } = useSession();
   const history = useHistory();
   const methods = useForm();
   const {
@@ -65,8 +67,9 @@ export default function TransactionForm() {
       setValue("amount", currentTransaction.amount);
     } else {
       reset();
+      setValue("user", user?.name);
     }
-  }, [currentTransaction, setValue, reset]);
+  }, [currentTransaction, user, setValue, reset]);
 
   useEffect(() => {
     setTransactionToUpdate(id);
@@ -104,6 +107,7 @@ export default function TransactionForm() {
             label="user"
             type="text"
             defaultValue=""
+            disabled
             validation={validationRules.user}
             data-cy="user_input"
           />
