@@ -31,7 +31,7 @@ describe("transactions test", () => {
     cy.visit("http://localhost:3000");
     cy.get("[data-cy=transactions_search_input").type("Ir");
     cy.get("[data-cy=transactions_search_btn").click();
-    cy.get("[data-cy=transaction").should("have.length", 2);
+    cy.get("[data-cy=transaction").should("have.length", 3);
     cy.get("[data-cy=transaction_place]").each((el, idx) => {
       expect(el[0].textContent).to.match(/Ir/);
     });
