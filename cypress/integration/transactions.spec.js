@@ -1,4 +1,8 @@
 describe("transactions test", () => {
+  beforeEach(() => {
+    cy.login('pieter.vanderhelst@hogent.be', '12345678');
+  });
+
   it("show transactions", () => {
     cy.intercept(
       "GET",
