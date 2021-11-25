@@ -20,7 +20,7 @@ export const PlacesProvider = ({
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(false);
-  const [places, setPlaces] = useState(null);
+  const [places, setPlaces] = useState([]);
 
   const refreshPlaces = useCallback(async () => {
     try {
