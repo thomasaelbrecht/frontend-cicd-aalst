@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useHistory } from 'react-router';
+import { Redirect, useHistory } from 'react-router';
 import LabelInput from '../components/LabelInput';
 import { useRegister, useSession } from '../contexts/AuthProvider';
 
@@ -14,13 +14,6 @@ export default function Register() {
     reset,
     getValues,
   } = methods;
-
-  useEffect(() => {
-    if (isAuthed) {
-      // you shouldn't come here when authenticated
-      history.replace('/');
-    }
-  }, [isAuthed, history]);
 
   const handleRegister = useCallback(async ({ name, email, password }) => {
     const success = await register({
@@ -59,6 +52,10 @@ export default function Register() {
       }
     },
   }), [getValues]);
+
+  if (isAuthed) {
+    return <Redirect from="/register" to="/" />
+  }
 
   return (
     <FormProvider {...methods}>

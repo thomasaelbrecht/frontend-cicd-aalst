@@ -1,6 +1,6 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useHistory } from 'react-router';
+import { useHistory, Redirect } from 'react-router';
 import LabelInput from '../components/LabelInput';
 import { useLogin, useSession } from '../contexts/AuthProvider';
 
@@ -23,13 +23,6 @@ export default function Login() {
     reset,
   } = methods;
 
-  useEffect(() => {
-    if (isAuthed) {
-      // you shouldn't come here when authenticated
-      history.replace('/');
-    }
-  }, [isAuthed, history]);
-
   const handleLogin = useCallback(async ({ email, password }) => {
     const success = await login(email, password);
 
@@ -42,6 +35,10 @@ export default function Login() {
   const handleCancel = useCallback(() => {
     reset();
   }, [reset]);
+
+  if (isAuthed) {
+    return <Redirect from="/login" to="/" />
+  }
 
   return (
     <FormProvider {...methods}>
