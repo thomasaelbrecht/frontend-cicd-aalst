@@ -46,7 +46,7 @@ describe("transactions test", () => {
     cy.get("[data-cy=transactions_search_input").type("xyz");
     cy.get("[data-cy=transactions_search_btn").click();
     cy.get("[data-cy=transaction").should("have.length", 0);
-    cy.get("[data-cy=transactions_error").should("not.exist");
+    cy.get("[data-cy=error_message").should("not.exist");
   });
 
   it("error from backend", () => {
@@ -58,6 +58,6 @@ describe("transactions test", () => {
     cy.visit("http://localhost:3000");
     cy.get("[data-cy=transactions_search_input").type("Ir");
     cy.get("[data-cy=transactions_search_btn").click();
-    cy.get("[data-cy=transactions_error").should("be.visible");
+    cy.get("[data-cy=error_message").should("be.visible");
   });
 });

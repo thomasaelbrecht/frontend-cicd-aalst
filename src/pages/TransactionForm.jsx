@@ -6,6 +6,7 @@ import { PlacesContext } from "../contexts/PlacesProvider";
 import LabelInput from "../components/LabelInput";
 import LabelSelect from "../components/LabelSelect";
 import { useSession } from "../contexts/AuthProvider";
+import ErrorMessage from "../components/ErrorMessage";
 
 const validationRules = {
   user: {
@@ -17,7 +18,7 @@ const validationRules = {
   amount: {
     valueAsNumber: true,
     required: "this is required",
-    min: { value: 1, message: "min 1" },
+    // min: { value: 1, message: "min 1" },
     max: { value: 5000, message: "max 5000" },
   },
 };
@@ -46,6 +47,7 @@ export default function TransactionForm() {
   } = methods;
 
   const {
+    error,
     currentTransaction,
     setTransactionToUpdate,
     createOrUpdateTransaction,
@@ -102,6 +104,7 @@ export default function TransactionForm() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="m-5">
+        <ErrorMessage error={error} />
         <div className="grid grid-cols-6 gap-6">
           <LabelInput
             label="user"

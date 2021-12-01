@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { TransactionsContext } from "../contexts/TransactionsProvider";
+import ErrorMessage from "./ErrorMessage";
 import Transaction from "./Transaction";
 
 export default function TransactionList({ search }) {
@@ -15,9 +16,7 @@ export default function TransactionList({ search }) {
   if (loading) return <h1 data-cy="loading">Loading...</h1>;
   if (error)
     return (
-      <p data-cy="transactions_error" className="error">
-        {JSON.stringify(error, null, 2)}
-      </p>
+      <ErrorMessage error={error} />
     );
   if (!transactions || !transactions.length) {
     return (

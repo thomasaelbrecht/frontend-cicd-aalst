@@ -29,6 +29,7 @@ export const TransactionsProvider = ({
       const data = await transactionsApi.getAllTransactions();
       setTransactions(data.data);
     } catch (error) {
+      console.log(error);
       setError(error);
     } finally {
       setLoading(false);
@@ -63,6 +64,7 @@ export const TransactionsProvider = ({
       return changedTransaction;
     } catch (error) {
       console.log(error);
+      setError(error);
       throw error;
     } finally {
         setLoading(false);
@@ -77,6 +79,7 @@ export const TransactionsProvider = ({
       refreshTransactions();
     } catch (error) {
       console.log(error);
+      setError(error);
       throw error;
     } finally {
       setLoading(false);
